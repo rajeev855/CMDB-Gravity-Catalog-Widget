@@ -1,0 +1,27 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Node (if used for development)
+node_modules/
+npm-debug.log*
+
+# Build artifacts
+dist/
+build/
+*.log
+
+# ServiceNow specific
+update_set*.xml

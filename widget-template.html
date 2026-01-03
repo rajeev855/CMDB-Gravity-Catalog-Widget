@@ -1,0 +1,98 @@
+<div class="cmdb-catalog-widget">
+    <!-- File Upload -->
+    <div class="upload-section" ng-if="!c.committed">
+        <div class="drop-zone" ng-class="{'drag-active': c.dragActive}">
+            <input type="file" id="cmdbFileInput" class="hidden" accept=".xlsx,.xls,.csv,.json"
+                onchange="angular.element(this).scope().c.handleFileSelect(event)">
+            <label for="cmdbFileInput" class="upload-label">
+                <i class="fa fa-cloud-upload fa-2x" ng-class="{'text-success': c.file}"></i>
+                <div ng-if="!c.file">
+                    <p class="upload-text">Drop file here or <span class="text-primary">browse</span></p>
+                    <p class="text-muted small">XLSX, CSV, JSON</p>
+                </div>
+                <div ng-if="c.file">
+                    <p class="upload-text text-success">{{c.file.name}}</p>
+                    <p class="text-muted small">{{(c.file.size / 1024).toFixed(1)}} KB - {{c.parsedRows.length}} rows
+                    </p>
+                </div>
+            </label>
+        </div>
+    </div>
+
+    <!-- Error Message -->
+    <div class="alert alert-danger" ng-if="c.error">
+        <i class="fa fa-exclamation-circle"></i> {{c.error}}
+    </div>
+
+    <!-- Data Preview Table -->
+    <div class="preview-section" ng-if="c.parsedRows.length > 0 && !c.committed">
+        <div class="preview-header">
+            <span class="preview-title">Preview</span>
+            <div class="status-badges" ng-if="c.simulationResults.length > 0">
+                <span class="badge badge-success" ng-if="c.getStatusCount('Create') > 0">{{c.getStatusCount('Create')}}
+                    New</span>
+                <span class="badge badge-warning" ng-if="c.getStatusCount('Update') > 0">{{c.getStatusCount('Update')}}
+                    Update</span>
+                <span class="badge badge-danger" ng-if="c.getStatusCount('Error') > 0">{{c.getStatusCount('Error')}}
+                    Error</span>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-sm table-bordered">
+                <thead>
+                    <tr>
+                        <th ng-if="c.simulationResults.length > 0" style="width:70px">Status</th>
+                        <th ng-repeat="col in c.columns">{{col}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="row in c.parsedRows" ng-class="{'table-danger': c.getRowStatus($index) === 'Error'}">
+                        <td ng-if="c.simulationResults.length > 0">
+                            <span class="badge" ng-class="{
+                                'badge-success': c.getRowStatus($index) === 'Create',
+                                'badge-warning': c.getRowStatus($index) === 'Update',
+                                'badge-danger': c.getRowStatus($index) === 'Error'
+                            }">{{c.getRowStatus($index)}}</span>
+                        </td>
+                        <td ng-repeat="col in c.columns" class="editable-cell"
+                            ng-click="!c.isEditing($parent.$index, col) && c.startEdit($parent.$index, col)">
+                            <input ng-if="c.isEditing($parent.$index, col)" type="text" class="edit-input"
+                                ng-model="c.editValue" ng-blur="c.saveEdit()" ng-keydown="c.handleKeyPress($event)"
+                                autofocus>
+                            <span ng-if="!c.isEditing($parent.$index, col)">{{row[col] || '-'}}</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons" ng-if="!c.committed && c.parsedRows.length > 0">
+        <button class="btn btn-primary" ng-click="c.runSimulation()" ng-disabled="c.loading">
+            <i class="fa fa-search" ng-if="!c.loading"></i>
+            <i class="fa fa-spinner fa-spin" ng-if="c.loading && !c.simulationResults.length"></i>
+            {{c.simulationResults.length ? 'Re-simulate' : 'Simulate'}}
+        </button>
+        <button class="btn btn-success" ng-click="c.runCommit()"
+            ng-disabled="!c.simulationResults.length || c.loading || c.hasErrors()">
+            <i class="fa fa-check" ng-if="!c.loading || !c.simulationResults.length"></i>
+            <i class="fa fa-spinner fa-spin" ng-if="c.loading && c.simulationResults.length"></i>
+            Commit
+        </button>
+    </div>
+    <p class="text-danger small text-center" ng-if="c.hasErrors() && c.simulationResults.length">Fix errors before
+        commit</p>
+
+    <!-- Success State -->
+    <div class="success-section" ng-if="c.committed">
+        <i class="fa fa-check-circle fa-3x text-success"></i>
+        <h4 class="text-success">Import Complete</h4>
+        <p>Created: <strong>{{c.getCommitCount('Create')}}</strong> | Updated:
+            <strong>{{c.getCommitCount('Update')}}</strong></p>
+        <p class="text-muted small">Results will be saved to your request</p>
+    </div>
+
+    <!-- Hidden field to store results for RITM -->
+    <input type="hidden" id="cmdb_import_results" ng-value="c.getResultsJSON()">
+</div>
