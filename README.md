@@ -6,9 +6,7 @@ A simplified Service Portal widget for use in **Catalog Items**. Designed to be 
 - ✅ File upload (XLSX, CSV, JSON)
 - ✅ Inline cell editing
 - ✅ IRE simulation and commit
-- ✅ Results saved to RITM on commit
-- ❌ No debug mode (removed for cleaner UI)
-- ❌ No header section (removed for catalog integration)
+
 
 ## Files
 
@@ -33,47 +31,9 @@ A simplified Service Portal widget for use in **Catalog Items**. Designed to be 
    - Widget: `cmdb_catalog_import`
    - Name: `cmdb_import`
 
-### 3. Save Results to RITM (Optional)
-Add this **Catalog Client Script** (onSubmit):
 
-```javascript
-function onSubmit() {
-    // Get results from widget
-    var results = window.cmdbImportResults || '';
-    if (results) {
-        g_form.setValue('comments', results);
-    }
-    return true;
-}
-```
 
-Or create a **Catalog Item Script** to process the results server-side.
 
-## RITM Data Structure
-
-When committed, results are stored as JSON:
-
-```json
-{
-    "timestamp": "2024-12-29T16:00:00.000Z",
-    "fileName": "servers.xlsx",
-    "totalRows": 5,
-    "created": 3,
-    "updated": 2,
-    "errors": 0,
-    "results": [
-        {"status": "Create", "sysId": "abc123", "name": "Server1", "message": "New CI"}
-    ]
-}
-```
-
-## Security Considerations
-
-- **Access Control**: Ensure proper ServiceNow ACLs are configured for CMDB write access
-- **File Upload**: Only allow trusted users to access catalog items with this widget
-- **External Dependency**: SheetJS is loaded from CDN; consider adding SRI verification for production
-
-See [SECURITY.md](SECURITY.md) for vulnerability reporting guidelines.
 
 ## Author
 
