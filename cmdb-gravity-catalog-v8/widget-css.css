@@ -1,0 +1,297 @@
+.cmdb-catalog-widget {
+    padding: 10px;
+    font-family: 'Lato', Arial, sans-serif;
+}
+
+/* Upload */
+.upload-section {
+    margin-bottom: 15px;
+}
+
+.drop-zone {
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding: 25px 15px;
+    text-align: center;
+    background: #fafafa;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.drop-zone:hover {
+    border-color: #0073e6;
+    background: #f0f7ff;
+}
+
+.drop-zone.drag-active {
+    border-color: #0073e6;
+    background: #e6f2ff;
+}
+
+.upload-label {
+    cursor: pointer;
+    display: block;
+}
+
+.upload-label i {
+    color: #999;
+    margin-bottom: 10px;
+}
+
+.upload-label i.text-success {
+    color: #28a745 !important;
+}
+
+.upload-text {
+    font-size: 14px;
+    color: #555;
+    margin: 5px 0;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Preview */
+.preview-section {
+    margin-bottom: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: #f5f5f5;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 13px;
+}
+
+.preview-title {
+    font-weight: 600;
+    color: #333;
+}
+
+.status-badges {
+    display: flex;
+    gap: 6px;
+}
+
+.table-responsive {
+    max-height: 300px;
+    overflow: auto;
+}
+
+.table {
+    margin: 0;
+    font-size: 12px;
+}
+
+.table thead th {
+    position: sticky;
+    top: 0;
+    background: #f5f5f5;
+    font-size: 10px;
+    text-transform: uppercase;
+    color: #666;
+    font-weight: 600;
+    padding: 6px 8px;
+    z-index: 1;
+}
+
+.table td {
+    padding: 4px 8px;
+}
+
+.table-danger {
+    background-color: #fff5f5 !important;
+}
+
+/* Editable cells */
+.editable-cell {
+    cursor: pointer;
+    min-width: 60px;
+    position: relative;
+}
+
+.editable-cell:hover {
+    background-color: #f0f7ff;
+}
+
+.editable-cell.editing-disabled {
+    cursor: default;
+}
+
+.editable-cell.editing-disabled:hover {
+    background-color: transparent;
+}
+
+.edit-input {
+    width: 100%;
+    padding: 2px 4px;
+    border: 1px solid #0073e6;
+    border-radius: 3px;
+    font-size: 12px;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 115, 230, 0.15);
+}
+
+.edit-hint {
+    text-align: center;
+    font-size: 11px;
+    color: #999;
+    padding: 4px 0;
+    margin: 0;
+}
+
+.edit-hint i {
+    margin-right: 3px;
+}
+
+/* Pagination */
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 12px;
+    background: #f5f5f5;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 12px;
+}
+
+.pagination-controls .btn {
+    padding: 3px 10px;
+    font-size: 12px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background: #fff;
+    color: #333;
+    cursor: pointer;
+}
+
+.pagination-controls .btn:hover:not(:disabled) {
+    background: #e9ecef;
+}
+
+.pagination-controls .btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.page-indicator {
+    color: #666;
+    font-weight: 600;
+}
+
+/* Progress bar */
+.progress-section {
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.progress-bar-container {
+    height: 8px;
+    background: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 6px;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: #0073e6;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    font-size: 12px;
+    color: #666;
+    margin: 0;
+}
+
+/* Badges */
+.badge {
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.badge-success {
+    background: #d4edda;
+    color: #155724;
+}
+
+.badge-warning {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.badge-danger {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* Buttons */
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.action-buttons .btn {
+    flex: 1;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 6px;
+}
+
+.action-buttons .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background: #0073e6;
+    border-color: #0073e6;
+    color: #fff;
+}
+
+.btn-success {
+    background: #28a745;
+    border-color: #28a745;
+    color: #fff;
+}
+
+/* Success */
+.success-section {
+    text-align: center;
+    padding: 25px 15px;
+    background: #f0fff4;
+    border: 1px solid #c3e6cb;
+    border-radius: 8px;
+}
+
+.success-section h4 {
+    margin: 10px 0;
+}
+
+/* Alert */
+.alert {
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-size: 13px;
+}
+
+.alert-danger {
+    background: #fff5f5;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+}

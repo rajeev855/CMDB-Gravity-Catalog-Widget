@@ -1,0 +1,128 @@
+<div class="cmdb-catalog-widget">
+    <!-- File Upload -->
+    <div class="upload-section" ng-if="!c.committed">
+        <div class="drop-zone" ng-class="{'drag-active': c.dragActive}">
+            <input type="file" id="cmdbFileInput" class="hidden" accept=".xlsx,.xls,.csv,.json"
+                onchange="angular.element(this).scope().c.handleFileSelect(event)">
+            <label for="cmdbFileInput" class="upload-label">
+                <i class="fa fa-cloud-upload fa-2x" ng-class="{'text-success': c.file}"></i>
+                <div ng-if="!c.file">
+                    <p class="upload-text">Drop file here or <span class="text-primary">browse</span></p>
+                    <p class="text-muted small">XLSX, CSV, JSON (max 2,000 rows)</p>
+                </div>
+                <div ng-if="c.file">
+                    <p class="upload-text text-success">{{c.file.name}}</p>
+                    <p class="text-muted small">{{(c.file.size / 1024).toFixed(1)}} KB - {{c.parsedRows.length}} rows
+                    </p>
+                </div>
+            </label>
+        </div>
+    </div>
+
+    <!-- Error Message -->
+    <div class="alert alert-danger" ng-if="c.error">
+        <i class="fa fa-exclamation-circle"></i> {{c.error}}
+    </div>
+
+    <!-- Batch Progress -->
+    <div class="progress-section" ng-if="c.batchProgress">
+        <div class="progress-bar-container">
+            <div class="progress-bar-fill"
+                ng-style="{'width': (c.batchProgress.current / c.batchProgress.total * 100) + '%'}"></div>
+        </div>
+        <p class="progress-text">Processing batch {{c.batchProgress.current}} of {{c.batchProgress.total}}</p>
+    </div>
+
+    <!-- Data Preview Table -->
+    <div class="preview-section" ng-if="c.parsedRows.length > 0 && !c.committed">
+        <div class="preview-header">
+            <span class="preview-title">Preview</span>
+            <div class="status-badges" ng-if="c.simulationResults.length > 0">
+                <span class="badge badge-success" ng-if="c.statusCounts.Create > 0">{{c.statusCounts.Create}}
+                    New</span>
+                <span class="badge badge-warning" ng-if="c.statusCounts.Update > 0">{{c.statusCounts.Update}}
+                    Update</span>
+                <span class="badge badge-danger" ng-if="c.statusCounts.Error > 0">{{c.statusCounts.Error}}
+                    Error</span>
+            </div>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="pagination-controls" ng-if="c.totalPages > 1">
+            <button class="btn btn-sm btn-default" ng-click="c.prevPage()" ng-disabled="c.currentPage <= 1">
+                <i class="fa fa-chevron-left"></i> Prev
+            </button>
+            <span class="page-indicator">Page {{c.currentPage}} of {{c.totalPages}}</span>
+            <button class="btn btn-sm btn-default" ng-click="c.nextPage()"
+                ng-disabled="c.currentPage >= c.totalPages">
+                Next <i class="fa fa-chevron-right"></i>
+            </button>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-sm table-bordered">
+                <thead>
+                    <tr>
+                        <th ng-if="c.simulationResults.length > 0" style="width:70px">Status</th>
+                        <th ng-repeat="col in c.columns track by $index">{{::col}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="row in c.displayRows track by $index"
+                        ng-class="{'table-danger': c.displayStatuses[$index] && c.displayStatuses[$index].status === 'Error'}">
+                        <!-- Status badge column -->
+                        <td ng-if="c.simulationResults.length > 0">
+                            <span ng-if="c.displayStatuses[$index]" class="badge" ng-class="{
+                                'badge-success': c.displayStatuses[$index].status === 'Create',
+                                'badge-warning': c.displayStatuses[$index].status === 'Update',
+                                'badge-danger': c.displayStatuses[$index].status === 'Error'
+                            }">{{c.displayStatuses[$index].status}}</span>
+                        </td>
+                        <!-- Editable data cells (disabled after simulation) -->
+                        <td ng-repeat="col in c.columns track by $index" class="editable-cell"
+                            ng-class="{'editing-disabled': c.simulationResults.length > 0}"
+                            ng-click="c.startEdit($parent.$index, col)">
+                            <input ng-if="c.isEditing($parent.$index, col)" type="text" class="edit-input"
+                                ng-model="c.editValue" ng-blur="c.saveEdit()"
+                                ng-keydown="c.handleEditKeydown($event)" autofocus>
+                            <span ng-if="!c.isEditing($parent.$index, col)">{{row[col] || '-'}}</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="edit-hint" ng-if="c.simulationResults.length === 0 && c.parsedRows.length > 0">
+            <i class="fa fa-pencil"></i> Click any cell to edit. Editing clears simulation results.
+        </p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons" ng-if="!c.committed && c.parsedRows.length > 0">
+        <button class="btn btn-primary" ng-click="c.runSimulation()" ng-disabled="c.loading">
+            <i class="fa fa-search" ng-if="!c.loading"></i>
+            <i class="fa fa-spinner fa-spin" ng-if="c.loading && !c.simulationResults.length"></i>
+            {{c.simulationResults.length ? 'Re-simulate' : 'Simulate'}}
+        </button>
+        <button class="btn btn-success" ng-click="c.runCommit()"
+            ng-disabled="!c.simulationResults.length || c.loading || c.hasErrorFlag">
+            <i class="fa fa-check" ng-if="!c.loading || !c.simulationResults.length"></i>
+            <i class="fa fa-spinner fa-spin" ng-if="c.loading && c.simulationResults.length"></i>
+            Commit
+        </button>
+    </div>
+    <p class="text-danger small text-center" ng-if="c.hasErrorFlag && c.simulationResults.length">
+        Fix errors before commit
+    </p>
+
+    <!-- Success State -->
+    <div class="success-section" ng-if="c.committed">
+        <i class="fa fa-check-circle fa-3x text-success"></i>
+        <h4 class="text-success">Import Complete</h4>
+        <p>Created: <strong>{{c.commitCounts.Create}}</strong> | Updated:
+            <strong>{{c.commitCounts.Update}}</strong></p>
+        <p class="text-muted small">Results will be saved to your request</p>
+    </div>
+
+    <!-- Hidden field to store results for RITM -->
+    <input type="hidden" id="cmdb_import_results" ng-value="c.resultsJSON">
+</div>
